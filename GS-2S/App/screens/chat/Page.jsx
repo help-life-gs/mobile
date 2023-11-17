@@ -1,21 +1,16 @@
-import { TouchableOpacity, ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
+import { TouchableOpacity, ScrollView, StyleSheet, Text, View, FlatList, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputMsg from '../../components/inputMsg';
 import { Feather } from '@expo/vector-icons';
 import { baseColor } from '../../utils/CONSTRAINTS';
 import { useNavigation } from '@react-navigation/native';
 import MessageBox from './components/MessageBox';
-import { useEffect } from 'react';
 
 export default function Chat(item) {
 
     const navigation = useNavigation();
 
     const { participantes, mensagens } = item.route.params;
-
-    useEffect(() => {
-        console.log(mensagens);
-    },[])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -39,12 +34,12 @@ export default function Chat(item) {
                 />
             </View>
 
-            <View style={styles.typingBox}>
+            <KeyboardAvoidingView style={styles.typingBox}>
                 <InputMsg />
                 <TouchableOpacity style={styles.sendBtn}>
                     <Feather name='send' size={22} style={{ color: baseColor, backgroundColor: '#eee', padding: '15%', borderRadius: 10, borderWidth : 2, borderColor : baseColor }} />
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
@@ -85,9 +80,9 @@ const styles = StyleSheet.create({
         flex : 1
     },
     userImg: {
-        backgroundColor: '#ccc',
-        width: 50,
-        height: 50,
+        backgroundColor: '#3dc',
+        width: 48,
+        height: 48,
         borderRadius: 999,
         elevation: 2
     },

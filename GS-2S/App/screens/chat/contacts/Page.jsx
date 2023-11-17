@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { baseColor } from "../../../utils/CONSTRAINTS";
-import Button from "../../../components/button";
 import ContactList from "../components/contactList/Page";
 
 export default function Contacts({navigation}) {

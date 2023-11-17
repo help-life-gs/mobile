@@ -1,8 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { baseColor } from "../../../utils/CONSTRAINTS";
 
-export default function ButtonMedicao() {
+export default function ButtonMedicao({press}) {
     return (
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={press}>
             <Text style={styles.buttonText}>Medir</Text>
         </TouchableOpacity>
     )
@@ -11,15 +12,14 @@ export default function ButtonMedicao() {
 const styles = StyleSheet.create({
     button : {
         width : 150,
-        height : 150,
-        backgroundColor : '#156669',
         borderRadius : 999,
+        height : 150,
+        backgroundColor : baseColor,
         alignItems : 'center',
         justifyContent : 'center',
-        elevation : 10,
-        borderWidth :2,
-        borderColor : '#ccc',
-        marginTop : '50%'
+        elevation : 5,
+        borderWidth : .5,
+        transform:[{rotate : '-45deg'}]
     },
     buttonText : {
         fontSize : 18,

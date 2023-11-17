@@ -1,11 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-export default function Button({ press, title }) {
+export default function Button({ press, title, desativado }) {
 
     return (
         <TouchableOpacity
             onPress={press}
-            style={styles.button}
+            style={desativado ?  styles.buttonDisabled : styles.button}
+            disabled={desativado}
         >
             <Text style={styles.buttonText}>{title}</Text>
         </TouchableOpacity>
@@ -21,6 +22,14 @@ const styles = StyleSheet.create({
         marginTop : '5%',
         alignSelf : 'center',
         elevation : 2
+    },
+    buttonDisabled : {
+        width : '80%',
+        backgroundColor : '#ccc',
+        padding : 15,
+        borderRadius : 10,
+        marginTop : '5%',
+        alignSelf : 'center',
     },
     buttonText : {
         fontSize : 16,

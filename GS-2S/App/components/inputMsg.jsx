@@ -1,8 +1,8 @@
 import { StyleSheet, TextInput } from "react-native";
 
-export default function InputMsg() {
+export default function InputMsg({ valor, setMsg}) {
     return(
-        <TextInput style={styles.input}/>
+        <TextInput style={styles.input} value={valor} onChangeText={setMsg}/>
     );
 }
 

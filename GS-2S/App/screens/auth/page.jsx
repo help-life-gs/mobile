@@ -30,7 +30,7 @@ export default function Auth( { navigation } ) {
       onSubmit={(values) => {
         handleLogin();
       }}
-      // validationSchema={validationSchema}
+      validationSchema={validationSchema}
     >
       {({ handleChange, handleSubmit, values, errors, handleBlur }) => (
         <View style={styles.loginDiv}>
