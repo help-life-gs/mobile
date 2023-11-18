@@ -1,47 +1,124 @@
-import { TouchableOpacity, StyleSheet, Text, View, FlatList, KeyboardAvoidingView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import InputMsg from '../../components/inputMsg';
+import { TouchableOpacity, StyleSheet, Text, View, } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { Feather } from '@expo/vector-icons';
 import { baseColor } from '../../utils/CONSTRAINTS';
-import { useNavigation } from '@react-navigation/native'    ;
-import MessageBox from './components/MessageBox';
+import {
+    collection,
+    addDoc,
+    orderBy,
+    query,
+    onSnapshot,
+    where
+} from "firebase/firestore"
 
-export default function Chat(item) {
+import { auth, database } from '../../config/firebaseConfig';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Bubble, Composer, GiftedChat } from 'react-native-gifted-chat';
+import React, { useEffect, useState, useLayoutEffect, useCallback } from 'react';
 
+export default function Chat() {
+
+    const [messages, setMessages] = useState([]);
     const navigation = useNavigation();
 
-    const { participantes, mensagens } = item.route.params;
+    const { email } = useRoute().params;
+
+    useLayoutEffect(() => {
+        const collectionRef = collection(database, 'chats');
+        const q = query(
+            collectionRef,
+            where('user._id', 'in', [auth.currentUser.email, email]),
+            orderBy('createdAt', 'desc')
+        );
+    
+        const unsubscribe = onSnapshot(q, snapshot => {
+            console.log('snapshot');
+            setMessages(
+                snapshot.docs.map(doc => ({
+                    _id: doc.id,
+                    createdAt: doc.data().createdAt.toDate(),
+                    text: doc.data().text,
+                    user: doc.data().user
+                }))
+            )
+        });
+    
+        return () => unsubscribe();
+    }, [navigation, email]);
+    
+
+
+    const onSend = useCallback((messages = []) => {
+        setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
+        console.log(messages);
+
+        const { _id, createdAt, text, user } = messages[0];
+        addDoc(collection(database, 'chats'), {
+            _id,
+            createdAt,
+            text,
+            user
+        });
+    }, []);
+
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.header}>
-                <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => { navigation.navigate('contacts') }}>
-                    <Feather size={30} name='arrow-left' />
-                    <View style={styles.userImg}>
+                <TouchableOpacity>
 
-                    </View>
                 </TouchableOpacity>
-                <Text style={styles.title}>
-                    {participantes.doutor}
-                </Text>
             </View>
+            <GiftedChat
+                messages={messages}
+                user={{
+                    _id: auth.currentUser.email,
+                    avatar: 'https://i.pravatar.cc/300'
+                }}
+                onSend={messages => onSend(messages)}
+                renderBubble={props => {
+                    return (
+                        <Bubble
+                            {...props}
+                            wrapperStyle={{
+                                left: {
+                                    backgroundColor: baseColor,
+                                    elevation: 2,
+                                    padding: 5
 
-            <View style={styles.chatBox}>
-                <FlatList
-                    data={mensagens}
-                    renderItem={({ item }) => <MessageBox {...item} />}
-                    keyExtractor={item => item.id}
-                />
-            </View>
+                                },
+                                right: {
+                                    backgroundColor: '#333',
+                                    elevation: 2,
+                                    padding: 5
+                                }
+                            }}
+                            textStyle={{
+                                left: {
+                                    color: '#fff'
+                                },
+                                right: {
 
-            <KeyboardAvoidingView style={styles.typingBox}>
-                <InputMsg />
-                <TouchableOpacity style={styles.sendBtn}>
-                    <Feather name='send' size={22} style={{ color: baseColor, backgroundColor: '#eee', padding: '15%', borderRadius: 10, borderWidth : 2, borderColor : baseColor }} />
-                </TouchableOpacity>
-            </KeyboardAvoidingView>
+                                }
+                            }}
+                        />
+                    );
+                }}
+
+                renderComposer={props => {
+                    return (
+                        <Composer
+                            {...props}
+                            placeholder="Digite sua mensagem..."
+                            textInputStyle={{
+                                color: 'black',
+                            }}
+                        />
+                    );
+                }}
+            />
         </SafeAreaView>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -58,12 +135,9 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     header: {
-        width: '100%',
         backgroundColor: baseColor,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: '4%',
-        paddingHorizontal: 5
     },
     typingBox: {
         width: '100%',
@@ -75,20 +149,4 @@ const styles = StyleSheet.create({
         borderColor: 'transparent',
         elevation: 1
     },
-    chatBox: {
-        width: '100%',
-        flex : 1
-    },
-    userImg: {
-        backgroundColor: '#3dc',
-        width: 48,
-        height: 48,
-        borderRadius: 999,
-        elevation: 2
-    },
-    sendBtn: {
-        width: '15%',
-        borderRadius: 10,
-        alignItems: 'center',
-    }
 });

@@ -6,6 +6,7 @@ import InputCustom from "../../../components/inputCustom";
 import * as yup from 'yup';
 import { baseColor } from "../../../utils/CONSTRAINTS";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NewEndereco() {
 
@@ -17,7 +18,7 @@ export default function NewEndereco() {
     estado: yup.string().required('Estado obrigatório*'),
     cidade: yup.string().required('Cidade obrigatória*'),
     logradouro: yup.string().required('Logradouro obrigatório*'),
-    numero: yup.number().required('Número obrigatório*')
+    numero: yup.string().required('Número obrigatório*')
   });
 
   const handleEndereco = async (endereco) => {
@@ -25,12 +26,15 @@ export default function NewEndereco() {
     setIsDesativado(true);
     setIsLoading(true);
 
+    const token = await AsyncStorage.getItem('token');
+
     try {
       const url = 'https://help-life.azurewebsites.net/api/endereco';
       const response = await fetch(url, {
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         method: 'POST',
         body: JSON.stringify(endereco)
@@ -50,7 +54,6 @@ export default function NewEndereco() {
     }
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
 
@@ -59,6 +62,7 @@ export default function NewEndereco() {
       <Formik
         initialValues={{ cep: '', estado: '', cidade: '', logradouro: '', numero: '' }}
         onSubmit={(values) => {
+          console.log(values);
           handleEndereco(values);
         }}
         validationSchema={validationSchema}

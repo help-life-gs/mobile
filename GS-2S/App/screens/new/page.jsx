@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import InputCustom from '../../components/inputCustom';
 import { baseColor } from '../../utils/CONSTRAINTS';
 import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function New({ navigation }) {
 
@@ -52,8 +53,10 @@ export default function New({ navigation }) {
       });
 
       if (response.ok) {
+        const token = await response.json()
+        AsyncStorage.setItem('token', token.token);
         console.log('Cadastro realizado com sucesso!');
-        navigation.navigate('endereco', {});
+        navigation.navigate('endereco');
       } else {
         console.error('Erro ao cadastrar:', response.status);
       }

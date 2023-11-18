@@ -3,9 +3,9 @@ import Profile from '../screens/profile/page';
 import Triagem from '../screens/triagem/page';
 import { Feather } from '@expo/vector-icons';
 import History from '../screens/history/Page';
-import Contacts from '../screens/chat/contacts/Page';
 import StackRoutes from './stack.routes';
 import Chat from '../screens/chat/Page';
+import Contatos from '../screens/chat/contatos/Page';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,11 +25,21 @@ export default function TabRoutes() {
                 }}
             />
 
+
+
             <Tab.Screen
-                name='contacts'
-                component={Contacts}
+                name='historico'
+                component={History}
                 options={{
-                    tabBarIcon: ({ color, size }) => <Feather name='message-circle' color={color} size={size} />,
+                    tabBarButton: () => null
+                }}
+            />
+
+            <Tab.Screen
+                name='chat'
+                component={Contatos}
+                options={{
+                    tabBarIcon: ({ color, size }) => <Feather name='message-square' color={color} size={size} />,
                     tabBarLabel: 'Chat'
                 }}
             />
@@ -44,24 +54,16 @@ export default function TabRoutes() {
             />
 
             <Tab.Screen
-                name='historico'
-                component={History}
-                options={{
-                    tabBarButton: () => null
-                }}
-            />
-
-            <Tab.Screen
-                name='chat'
-                component={Chat}
-                options={{
-                    tabBarButton: () => null
-                }}
-            />
-
-            <Tab.Screen
                 name='StackRoutes'
                 component={StackRoutes}
+                options={{
+                    tabBarButton: () => null
+                }}
+            />
+
+            <Tab.Screen
+                name='conversas'
+                component={Chat}
                 options={{
                     tabBarButton: () => null
                 }}
