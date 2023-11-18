@@ -9,15 +9,25 @@ import { useState } from 'react';
 
 export default function New({ navigation }) {
 
+  const formataData = (data) => {
+    const stringData = String(data)
+      .split("")
+      .filter((e) => e.match(/\d/g, ""))
+      .join("")
+      .padEnd(18, "0");
+  
+    return `${stringData.substring(4, 8)}-${stringData.substring(2,4)}-${stringData.substring(0, 2)}T${stringData.substring(8,10)}:${stringData.substring(10, 12)}:${stringData.substring(12,14)}+${stringData.substring(14, 16)}:${stringData.substring(16,18)}`;
+  }
+
   const validationSchema = yup.object().shape({
     nome: yup.string().required('Nome obrigatório*'),
     email: yup.string().email('Insira um email válido*').required('Email obrigatório*'),
-    data: yup
-    .string()
-    .test('formato-isoDate', 'Formato de data inválido. Use o formato (AAAA-MM-DD).', value => {
-      return value ? /^\d{4}-\d{2}-\d{2}$/.test(value) : true;
-    })
-    .required('Data obrigatória*'),
+    dataNasc: yup
+      .string()
+      .test('formato-isoDate', 'Formato de data inválido. Use o formato (dd-mm-aaaa).', value => {
+        return value ? /^\d{2}-\d{2}-\d{4}$/.test(value) : true;
+      })
+      .required('Data obrigatória*'),
     telefone: yup.string().required('Telefone obrigatório*'),
     senha: yup.string().min(6, 'A senha deve conter pelo menos 6 caracteres').required('A senha é obrigatória*')
   });
@@ -63,10 +73,12 @@ export default function New({ navigation }) {
       <Text style={styles.subtitle}>Venha conhecer nosso serviço!</Text>
 
       <Formik
-        initialValues={{ nome: '', email: '', data: new Date(''), telefone: '', senha: '' }}
+        initialValues={{ nome: '', email: '', dataNasc: '', telefone: '', senha: '' }}
         onSubmit={(values) => {
+          values.dataNasc = formataData(values.dataNasc);
           handleCadastro(values)
-            .then(() => navigation.navigate('endereco'))
+            .then(() => navigation.navigate('endereco'));
+          console.log(values);
         }}
         validationSchema={validationSchema}
       >
@@ -92,11 +104,11 @@ export default function New({ navigation }) {
 
                 <InputCustom
                   label={'Data de nascimento'}
-                  onChange={handleChange('data')}
-                  inputValue={values.data}
-                  onBlur={handleBlur('data')}
+                  onChange={handleChange('dataNasc')}
+                  inputValue={values.dataNasc}
+                  onBlur={handleBlur('dataNasc')}
                 />
-                {errors.data && <Text style={styles.message}>{errors.data}</Text>}
+                {errors.dataNasc && <Text style={styles.message}>{errors.dataNasc}</Text>}
 
                 <InputCustom
                   label={'Telefone'}

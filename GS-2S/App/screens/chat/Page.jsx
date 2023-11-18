@@ -1,9 +1,9 @@
-import { TouchableOpacity, ScrollView, StyleSheet, Text, View, FlatList, KeyboardAvoidingView } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, FlatList, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputMsg from '../../components/inputMsg';
 import { Feather } from '@expo/vector-icons';
 import { baseColor } from '../../utils/CONSTRAINTS';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'    ;
 import MessageBox from './components/MessageBox';
 
 export default function Chat(item) {

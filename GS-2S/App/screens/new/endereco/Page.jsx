@@ -25,8 +25,6 @@ export default function NewEndereco() {
     setIsDesativado(true);
     setIsLoading(true);
 
-    //alterar end point
-
     try {
       const url = 'https://help-life.azurewebsites.net/api/endereco';
       const response = await fetch(url, {

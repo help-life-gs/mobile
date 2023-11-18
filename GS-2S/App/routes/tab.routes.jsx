@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Profile from '../screens/profile/page';
 import Triagem from '../screens/triagem/page';
 import { Feather } from '@expo/vector-icons';
-import History from '../screens/history/page';
+import History from '../screens/history/Page';
 import Contacts from '../screens/chat/contacts/Page';
 import StackRoutes from './stack.routes';
 import Chat from '../screens/chat/Page';
