@@ -1,4 +1,4 @@
-import { TouchableOpacity, StyleSheet, Text, View, } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, ActivityIndicator, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Feather } from '@expo/vector-icons';
 import { baseColor } from '../../utils/CONSTRAINTS';
@@ -21,16 +21,19 @@ export default function Chat() {
     const [messages, setMessages] = useState([]);
     const navigation = useNavigation();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const { email } = useRoute().params;
 
     useLayoutEffect(() => {
+        setIsLoading(true);
         const collectionRef = collection(database, 'chats');
         const q = query(
             collectionRef,
             where('user._id', 'in', [auth.currentUser.email, email]),
             orderBy('createdAt', 'desc')
         );
-    
+
         const unsubscribe = onSnapshot(q, snapshot => {
             console.log('snapshot');
             setMessages(
@@ -40,12 +43,13 @@ export default function Chat() {
                     text: doc.data().text,
                     user: doc.data().user
                 }))
-            )
+            );
+            setIsLoading(false);
         });
-    
+
         return () => unsubscribe();
     }, [navigation, email]);
-    
+
 
 
     const onSend = useCallback((messages = []) => {
@@ -69,54 +73,57 @@ export default function Chat() {
 
                 </TouchableOpacity>
             </View>
-            <GiftedChat
-                messages={messages}
-                user={{
-                    _id: auth.currentUser.email,
-                    avatar: 'https://i.pravatar.cc/300'
-                }}
-                onSend={messages => onSend(messages)}
-                renderBubble={props => {
-                    return (
-                        <Bubble
-                            {...props}
-                            wrapperStyle={{
-                                left: {
-                                    backgroundColor: baseColor,
-                                    elevation: 2,
-                                    padding: 5
+            {isLoading ?
+                <View style={{ flex: 1, alignItems : 'center', justifyContent : 'center' }}>
+                    <ActivityIndicator size={'large'} color={baseColor}/>
+                </View> :
+                <GiftedChat
+                    messages={messages}
+                    user={{
+                        _id: auth.currentUser.email,
+                        avatar: 'https://i.pravatar.cc/300'
+                    }}
+                    onSend={messages => onSend(messages)}
+                    renderBubble={props => {
+                        return (
+                            <Bubble
+                                {...props}
+                                wrapperStyle={{
+                                    left: {
+                                        elevation: 2,
+                                        padding: 5,
+                                        backgroundColor: '#333'
+                                    },
+                                    right: {
+                                        backgroundColor: baseColor,
+                                        elevation: 2,
+                                        padding: 5
+                                    }
+                                }}
+                                textStyle={{
+                                    left: {
+                                        color: '#fff'
+                                    },
+                                    right: {
 
-                                },
-                                right: {
-                                    backgroundColor: '#333',
-                                    elevation: 2,
-                                    padding: 5
-                                }
-                            }}
-                            textStyle={{
-                                left: {
-                                    color: '#fff'
-                                },
-                                right: {
+                                    }
+                                }}
+                            />
+                        );
+                    }}
 
-                                }
-                            }}
-                        />
-                    );
-                }}
-
-                renderComposer={props => {
-                    return (
-                        <Composer
-                            {...props}
-                            placeholder="Digite sua mensagem..."
-                            textInputStyle={{
-                                color: 'black',
-                            }}
-                        />
-                    );
-                }}
-            />
+                    renderComposer={props => {
+                        return (
+                            <Composer
+                                {...props}
+                                placeholder="Digite sua mensagem..."
+                                textInputStyle={{
+                                    color: 'black',
+                                }}
+                            />
+                        );
+                    }}
+                />}
         </SafeAreaView>
     )
 }

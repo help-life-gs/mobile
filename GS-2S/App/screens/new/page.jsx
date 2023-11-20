@@ -7,17 +7,18 @@ import InputCustom from '../../components/inputCustom';
 import { baseColor } from '../../utils/CONSTRAINTS';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../config/firebaseConfig';
 
 export default function New({ navigation }) {
-
   const formataData = (data) => {
     const stringData = String(data)
       .split("")
       .filter((e) => e.match(/\d/g, ""))
       .join("")
       .padEnd(18, "0");
-  
-    return `${stringData.substring(4, 8)}-${stringData.substring(2,4)}-${stringData.substring(0, 2)}T${stringData.substring(8,10)}:${stringData.substring(10, 12)}:${stringData.substring(12,14)}+${stringData.substring(14, 16)}:${stringData.substring(16,18)}`;
+
+    return `${stringData.substring(4, 8)}-${stringData.substring(2, 4)}-${stringData.substring(0, 2)}T${stringData.substring(8, 10)}:${stringData.substring(10, 12)}:${stringData.substring(12, 14)}+${stringData.substring(14, 16)}:${stringData.substring(16, 18)}`;
   }
 
   const validationSchema = yup.object().shape({
@@ -42,6 +43,7 @@ export default function New({ navigation }) {
     setIsLoading(true);
 
     try {
+      await createUserWithEmailAndPassword(auth, pessoa.email, pessoa.senha);
       const url = 'https://help-life.azurewebsites.net/api/registrar';
       const response = await fetch(url, {
         headers: {
@@ -53,15 +55,15 @@ export default function New({ navigation }) {
       });
 
       if (response.ok) {
-        const token = await response.json()
+        const token = await response.json();
         AsyncStorage.setItem('token', token.token);
-        console.log('Cadastro realizado com sucesso!');
         navigation.navigate('endereco');
+        console.log('Cadastro realizado com sucesso!');
       } else {
         console.error('Erro ao cadastrar:', response.status);
       }
     } catch (error) {
-      console.error('Erro na chamada da API:', error);
+      console.error('Erro ao cadastrar', error);
     } finally {
       setIsLoading(false);
       setIsDesativado(false);

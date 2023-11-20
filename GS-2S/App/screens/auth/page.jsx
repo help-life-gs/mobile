@@ -7,8 +7,8 @@ import * as yup from 'yup';
 import { TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { baseColor } from '../../utils/CONSTRAINTS';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebaseConfig';
 
 export default function Auth({ navigation }) {

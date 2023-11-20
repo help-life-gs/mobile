@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, FlatList, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity, FlatList, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { database } from '../../../config/firebaseConfig';
@@ -11,7 +11,11 @@ export default function Contatos() {
     const [contatos, setContatos] = useState([]);
     const navigation = useNavigation();
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
+
         const collectionRef = collection(database, 'contatos');
         const q = query(collectionRef, orderBy('nome'));
 
@@ -23,9 +27,10 @@ export default function Contatos() {
                     email: doc.data().email,
                 }))
             );
+            setIsLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => unsubscribe();;
     }, []);
 
     const handleChatPress = (email, contatoNome) => {
@@ -38,17 +43,21 @@ export default function Contatos() {
             <View style={styles.header}>
                 <Text style={styles.title}>Contatos</Text>
             </View>
-            <FlatList
-                data={contatos}
-                keyExtractor={(item) => item.contatoId}
-                renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleChatPress(item.email, item.nome)}>
-                        <View style={styles.contato}>
-                            <Text style={{fontSize : 18}}>{item.nome}</Text>
-                        </View>
-                    </TouchableOpacity>
-                )}
-            />
+            {isLoading ?
+                <View style={{flex : 1, alignItems : 'center', justifyContent : 'center'}}>
+                    <ActivityIndicator size="large" color={baseColor}/>
+                </View> :
+                <FlatList
+                    data={contatos}
+                    keyExtractor={(item) => item.contatoId}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => handleChatPress(item.email, item.nome)}>
+                            <View style={styles.contato}>
+                                <Text style={{ fontSize: 18 }}>{item.nome}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />}
         </SafeAreaView>
     );
 }
@@ -75,18 +84,18 @@ const styles = StyleSheet.create({
     },
     contato: {
         backgroundColor: '#eee',
-        borderBottomWidth : 1,
-        borderColor : '#ccc',
+        borderBottomWidth: 1,
+        borderColor: '#ccc',
         flexDirection: 'row',
-        padding : '5%',
+        padding: '5%',
     },
     icon: {
         fontSize: 25,
         color: '#fff',
         backgroundColor: '#fff4',
         padding: 10,
-        borderWidth : .5,
-        borderColor : '#333',
+        borderWidth: .5,
+        borderColor: '#333',
         borderRadius: 999,
 
     },
