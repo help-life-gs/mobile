@@ -38,7 +38,7 @@ export default function NewEndereco() {
         },
         method: 'POST',
         body: JSON.stringify(endereco)
-      });
+      }); 
 
       if (response.ok) {
         console.log('Endereco cadastrado com sucesso!');

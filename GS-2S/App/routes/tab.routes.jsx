@@ -2,11 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Profile from '../screens/profile/page';
 import Triagem from '../screens/triagem/page';
 import { Feather } from '@expo/vector-icons';
-import History from '../screens/history/Page';
-import StackRoutes from './stack.routes';
+import History from '../screens/history/page';
 import Chat from '../screens/chat/Page';
 import Contatos from '../screens/chat/contatos/Page';
-
+import EditUser from '../screens/profile/edit/Page';
 const Tab = createBottomTabNavigator();
 
 export default function TabRoutes() {
@@ -24,8 +23,6 @@ export default function TabRoutes() {
                     tabBarLabel: 'Triagem',
                 }}
             />
-
-
 
             <Tab.Screen
                 name='historico'
@@ -54,16 +51,16 @@ export default function TabRoutes() {
             />
 
             <Tab.Screen
-                name='StackRoutes'
-                component={StackRoutes}
+                name='conversas'
+                component={Chat}
                 options={{
                     tabBarButton: () => null
                 }}
             />
 
             <Tab.Screen
-                name='conversas'
-                component={Chat}
+                name='editUser'
+                component={EditUser}
                 options={{
                     tabBarButton: () => null
                 }}

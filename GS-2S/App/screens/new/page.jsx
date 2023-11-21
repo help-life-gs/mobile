@@ -16,9 +16,8 @@ export default function New({ navigation }) {
       .split("")
       .filter((e) => e.match(/\d/g, ""))
       .join("")
-      .padEnd(18, "0");
 
-    return `${stringData.substring(4, 8)}-${stringData.substring(2, 4)}-${stringData.substring(0, 2)}T${stringData.substring(8, 10)}:${stringData.substring(10, 12)}:${stringData.substring(12, 14)}+${stringData.substring(14, 16)}:${stringData.substring(16, 18)}`;
+    return `${stringData.substring(4, 8)}-${stringData.substring(2, 4)}-${stringData.substring(0, 2)}`;
   }
 
   const validationSchema = yup.object().shape({
@@ -58,7 +57,6 @@ export default function New({ navigation }) {
         const token = await response.json();
         AsyncStorage.setItem('token', token.token);
         navigation.navigate('endereco');
-        console.log('Cadastro realizado com sucesso!');
       } else {
         console.error('Erro ao cadastrar:', response.status);
       }
@@ -127,6 +125,7 @@ export default function New({ navigation }) {
                   label={'Crie uma senha'}
                   onChange={handleChange('senha')}
                   inputValue={values.senha}
+                  isSecure={true}
                   onBlur={handleBlur('senha')}
                 />
                 {errors.senha && <Text style={styles.message}>{errors.senha}</Text>}

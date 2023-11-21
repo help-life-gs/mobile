@@ -10,6 +10,7 @@ import { baseColor } from '../../utils/CONSTRAINTS';
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Auth({ navigation }) {
 
@@ -21,38 +22,58 @@ export default function Auth({ navigation }) {
 
   const validationSchema = yup.object().shape({
     email: yup.string().email('Insira um email válido').required('Email obrigatório*'),
-    password: yup.string().required('Senha obrigatória*'),
+    senha: yup.string().required('Senha obrigatória*'),
   });
 
-  const handleLogin = (login) => {
-
+  const handleLogin = async (login) => {
     setIsLoading(true);
     setIsDesativado(true);
-    if (login.email !== "" && login.password !== "") {
-      signInWithEmailAndPassword(auth, login.email, login.password)
-        .then(() => {
-          console.log('login success');
-          loginNavigation();
-        })
-        .catch((err) => {
-          Alert.alert("login error : ", err.message)
-        })
-        .finally(
-          () => {
-            setIsLoading(false);
-            setIsDesativado(false);
-          }
-        )
 
+    try {
+      const url = 'https://help-life.azurewebsites.net/api/login';
+      const response = await fetch(url, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': ''
+        },
+        method: 'POST',
+        body: JSON.stringify(login)
+      });
+      const token = await response.json();
+
+      if (response.ok) {
+        signInWithEmailAndPassword(auth, login.email, login.senha)
+          .then(() => {
+            console.log('login success');
+            loginNavigation();
+          })
+          .catch((err) => {
+            Alert.alert("Erro ao fazer login!")
+          })
+          .finally(
+            () => {
+              AsyncStorage.setItem('token', token.token);
+            }
+          )
+      }
+    } catch (err) {
+      console.error("Erro na chamada da api: ", err);
     }
+    finally {
+      setIsLoading(false);
+      setIsDesativado(false);
+    }
+
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerLogin}>
         <Image style={{ height: 250, width: 250 }} source={require('../../assets/logo_help.png')} />
       </View>
       <Formik
-        initialValues={{ email: '', password: '' }}
+        initialValues={{ email: '', senha: '' }}
         onSubmit={(values) => {
           handleLogin(values);
         }}
@@ -71,12 +92,12 @@ export default function Auth({ navigation }) {
 
             <InputCustom
               label={'Senha'}
-              onChange={handleChange('password')}
-              inputValue={values.password}
-              onBlur={handleBlur('password')}
+              onChange={handleChange('senha')}
+              inputValue={values.senha}
+              onBlur={handleBlur('senha')}
               isSecure={true}
             />
-            {errors.password && <Text style={styles.message}>{errors.password}</Text>}
+            {errors.senha && <Text style={styles.message}>{errors.senha}</Text>}
 
             {isLoading && (
               <View style={styles.loadingOverlay}>
@@ -84,7 +105,7 @@ export default function Auth({ navigation }) {
               </View>
             )}
 
-            <Button press={handleSubmit} title={'LOGIN'} desativado={isDesativado}/>
+            <Button press={handleSubmit} title={'LOGIN'} desativado={isDesativado} />
             <View style={styles.cadastro}>
               <TouchableOpacity onPress={() => { navigation.navigate('cadastro') }}>
                 <Text style={styles.cadastroLink}>CRIAR CONTA</Text>

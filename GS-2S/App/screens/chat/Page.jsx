@@ -1,6 +1,5 @@
 import { TouchableOpacity, StyleSheet, Text, View, ActivityIndicator, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Feather } from '@expo/vector-icons';
 import { baseColor } from '../../utils/CONSTRAINTS';
 import {
     collection,
@@ -14,7 +13,7 @@ import {
 import { auth, database } from '../../config/firebaseConfig';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Bubble, Composer, GiftedChat } from 'react-native-gifted-chat';
-import React, { useEffect, useState, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useLayoutEffect, useCallback } from 'react';
 
 export default function Chat() {
 
@@ -26,6 +25,7 @@ export default function Chat() {
     const { email } = useRoute().params;
 
     useLayoutEffect(() => {
+        console.log(auth.currentUser.email);
         setIsLoading(true);
         const collectionRef = collection(database, 'chats');
         const q = query(

@@ -21,17 +21,14 @@ export default function App() {
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      console.log(location);
-
+    
       try {
         const stringLocation = JSON.stringify(location);
         await AsyncStorage.setItem('location', stringLocation);
       }
-
       catch(err) {
         console.error("Erro ao salvar localização", err);
       }
-      console.log(location);
     })();
 
   }, []);
