@@ -2,10 +2,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Profile from '../screens/profile/page';
 import Triagem from '../screens/triagem/page';
 import { Feather } from '@expo/vector-icons';
-import History from '../screens/history/page';
 import Chat from '../screens/chat/Page';
 import Contatos from '../screens/chat/contatos/Page';
 import EditUser from '../screens/profile/edit/Page';
+import History from '../screens/history/page';
+
+
 const Tab = createBottomTabNavigator();
 
 export default function TabRoutes() {

@@ -8,7 +8,7 @@ import { baseColor } from "../../../utils/CONSTRAINTS";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function NewEndereco() {
+export default function NewEndereco({ navigation }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isDesativado, setIsDesativado] = useState(false);
@@ -42,7 +42,7 @@ export default function NewEndereco() {
 
       if (response.ok) {
         console.log('Endereco cadastrado com sucesso!');
-        navigation.navigate('endereco');
+        navigation.navigate('login');
       } else {
         console.error('Erro ao cadastrar:', response.status);
       }
