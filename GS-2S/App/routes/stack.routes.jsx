@@ -2,7 +2,6 @@ import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/
 import Auth from '../screens/auth/page';
 import New from '../screens/new/page';
 import NewEndereco from '../screens/new/endereco/Page';
-import Contatos from '../screens/chat/contatos/Page';
 
 export default function StackRoutes() {
 

@@ -3,7 +3,6 @@ import Profile from '../screens/profile/page';
 import Triagem from '../screens/triagem/page';
 import { Feather } from '@expo/vector-icons';
 import Chat from '../screens/chat/Page';
-import Contatos from '../screens/chat/contatos/Page';
 import EditUser from '../screens/profile/edit/Page';
 import History from '../screens/history/page';
 
@@ -36,7 +35,7 @@ export default function TabRoutes() {
 
             <Tab.Screen
                 name='chat'
-                component={Contatos}
+                component={Chat}
                 options={{
                     tabBarIcon: ({ color, size }) => <Feather name='message-square' color={color} size={size} />,
                     tabBarLabel: 'Chat'
@@ -49,14 +48,6 @@ export default function TabRoutes() {
                 options={{
                     tabBarIcon: ({ color, size }) => <Feather name='user' color={color} size={size} />,
                     tabBarLabel: 'Perfil'
-                }}
-            />
-
-            <Tab.Screen
-                name='conversas'
-                component={Chat}
-                options={{
-                    tabBarButton: () => null
                 }}
             />
 

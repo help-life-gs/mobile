@@ -10,27 +10,38 @@ import {
     where
 } from "firebase/firestore"
 
-import { auth, database } from '../../config/firebaseConfig';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { database } from '../../config/firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
 import { Bubble, Composer, GiftedChat } from 'react-native-gifted-chat';
-import React, { useState, useLayoutEffect, useCallback } from 'react';
+import React, { useState, useLayoutEffect, useCallback, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Chat() {
 
+    useEffect(() => {
+        getEmail();
+    }, [])
+
     const [messages, setMessages] = useState([]);
     const navigation = useNavigation();
-
     const [isLoading, setIsLoading] = useState(false);
 
-    const { email } = useRoute().params;
+    const [userEmail, setUserEmail] = useState('');
+
+    const getEmail = async () => {
+        const userStr = await AsyncStorage.getItem('user');
+        const userObj = JSON.parse(userStr);
+        console.log(userObj);
+        setUserEmail(userObj.email);
+    }
+
 
     useLayoutEffect(() => {
-        console.log(auth.currentUser.email);
         setIsLoading(true);
         const collectionRef = collection(database, 'chats');
         const q = query(
             collectionRef,
-            where('user._id', 'in', [auth.currentUser.email, email]),
+            query('chats'),
             orderBy('createdAt', 'desc')
         );
 
@@ -41,14 +52,14 @@ export default function Chat() {
                     _id: doc.id,
                     createdAt: doc.data().createdAt.toDate(),
                     text: doc.data().text,
-                    user: doc.data().user
+                    user: doc.data().user,
                 }))
             );
             setIsLoading(false);
         });
 
         return () => unsubscribe();
-    }, [navigation, email]);
+    }, [navigation]);
 
 
 
@@ -61,7 +72,7 @@ export default function Chat() {
             _id,
             createdAt,
             text,
-            user
+            user,
         });
     }, []);
 
@@ -74,14 +85,15 @@ export default function Chat() {
                 </TouchableOpacity>
             </View>
             {isLoading ?
-                <View style={{ flex: 1, alignItems : 'center', justifyContent : 'center' }}>
-                    <ActivityIndicator size={'large'} color={baseColor}/>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator size={'large'} color={baseColor} />
                 </View> :
                 <GiftedChat
                     messages={messages}
                     user={{
-                        _id: auth.currentUser.email,
-                        avatar: 'https://i.pravatar.cc/300'
+                        _id: userEmail,
+                        avatar: 'https://i.pravatar.cc/300',
+                        tipo: 'paciente'
                     }}
                     onSend={messages => onSend(messages)}
                     renderBubble={props => {

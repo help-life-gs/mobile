@@ -7,8 +7,6 @@ import InputCustom from '../../components/inputCustom';
 import { baseColor } from '../../utils/CONSTRAINTS';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebaseConfig';
 
 export default function New({ navigation }) {
   const formataData = (data) => {
@@ -42,7 +40,6 @@ export default function New({ navigation }) {
     setIsLoading(true);
 
     try {
-      await createUserWithEmailAndPassword(auth, pessoa.email, pessoa.senha);
       const url = 'https://help-life.azurewebsites.net/api/registrar';
       const response = await fetch(url, {
         headers: {
@@ -54,7 +51,8 @@ export default function New({ navigation }) {
       });
 
       if (response.ok) {
-        const token = await response.json();
+        const resp = await response.json();
+        const token = resp.token;
         AsyncStorage.setItem('token', token.token);
         navigation.navigate('endereco');
       } else {

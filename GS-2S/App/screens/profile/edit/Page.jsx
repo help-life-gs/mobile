@@ -8,7 +8,7 @@ import { useRoute } from "@react-navigation/native";
 import Button from "../../../components/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function EditUser({ navigation}) {
+export default function EditUser({ navigation }) {
     const { nome, email } = useRoute().params;
 
     const updateUser = async (user) => {
@@ -20,9 +20,9 @@ export default function EditUser({ navigation}) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-              },
-              method: 'PUT',
-              body: JSON.stringify(user)
+            },
+            method: 'PUT',
+            body: JSON.stringify(user)
         });
     }
 
@@ -30,7 +30,7 @@ export default function EditUser({ navigation}) {
         <SafeAreaView>
             <View style={styles.header}>
                 <Text style={styles.title}>Editar Perfil</Text>
-                <TouchableOpacity>  
+                <TouchableOpacity>
                     <Feather name='x' style={styles.icon} onPress={() => { navigation.navigate('Profile') }} />
                 </TouchableOpacity>
             </View>
@@ -58,17 +58,17 @@ export default function EditUser({ navigation}) {
                             inputValue={values.email}
                             onBlur={handleBlur('email')}
                         />
-                        
+
                         <InputCustom
-                        label={'Senha'}
-                        onChange={handleChange('senha')}
-                        inputValue={values.senha}
-                        onBlur={handleBlur('senha')}
-                        isSecure={true}
-                    />
+                            label={'Senha'}
+                            onChange={handleChange('senha')}
+                            inputValue={values.senha}
+                            onBlur={handleBlur('senha')}
+                            isSecure={true}
+                        />
                         {errors.email && <Text style={styles.message}>{errors.email}</Text>}
 
-                        <Button title="Salvar" press={handleSubmit}/>
+                        <Button title="Salvar" press={handleSubmit} />
                     </View>
                 )}
             </Formik>

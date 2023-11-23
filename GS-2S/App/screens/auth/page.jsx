@@ -8,8 +8,6 @@ import { TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { baseColor } from '../../utils/CONSTRAINTS';
 import { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Auth({ navigation }) {
@@ -40,29 +38,21 @@ export default function Auth({ navigation }) {
         method: 'POST',
         body: JSON.stringify(login)
       });
-      const token = await response.json();
+      const resp = await response.json();
 
-      if (response.ok) {
-        signInWithEmailAndPassword(auth, login.email, login.senha)
-          .then(() => {
-            console.log('login success');
-            loginNavigation();
-          })
-          .catch((err) => {
-            Alert.alert("Erro ao fazer login!")
-          })
-          .finally(
-            () => {
-              AsyncStorage.setItem('token', token.token);
-            }
-          )
-      }
+      const user = JSON.stringify(resp.usuario);
+      const token = resp.token.token;
+
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('user', user);
+
     } catch (err) {
-      console.error("Erro na chamada da api: ", err);
+      Alert.alert('Erro ao fazer login, tente novamente.')
     }
     finally {
       setIsLoading(false);
       setIsDesativado(false);
+      loginNavigation();
     }
 
   }

@@ -13,8 +13,14 @@ export default function NewEndereco({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDesativado, setIsDesativado] = useState(false);
 
+  function formataCep(input) {
+    return String(input).split("").filter((e) => e.match(/\d/g, "")).join("").padStart(8, "0");
+  }
+
   const validationSchema = yup.object().shape({
-    cep: yup.string().required('CEP obrigatório*'),
+    cep: yup.number()
+      .required('CEP é obrigatório.')
+      .test('len', 'CEP deve ter exatamente 8 dígitos.', val => val && val.toString().length === 8).typeError('O CEP deve ser um número válido.'),
     estado: yup.string().required('Estado obrigatório*'),
     cidade: yup.string().required('Cidade obrigatória*'),
     logradouro: yup.string().required('Logradouro obrigatório*'),
@@ -38,7 +44,7 @@ export default function NewEndereco({ navigation }) {
         },
         method: 'POST',
         body: JSON.stringify(endereco)
-      }); 
+      });
 
       if (response.ok) {
         console.log('Endereco cadastrado com sucesso!');
@@ -73,9 +79,9 @@ export default function NewEndereco({ navigation }) {
               <View style={{ paddingVertical: '5%' }}>
                 <InputCustom
                   label={'CEP'}
-                  onChange={handleChange('cep')}
+                  onChange={handleChange('cep')} 
                   inputValue={values.cep}
-                  onBlur={handleBlur('cep')}
+                  onBlur={handleBlur}
                 />
                 {errors.cep && <Text style={styles.message}>{errors.cep}</Text>}
 
@@ -117,7 +123,7 @@ export default function NewEndereco({ navigation }) {
                   </View>
                 )}
 
-                <Button title={'Cadastrar'} press={handleSubmit} desativado={isDesativado}/>
+                <Button title={'Cadastrar'} press={handleSubmit} desativado={isDesativado} />
               </View>
             </ScrollView>
           )
