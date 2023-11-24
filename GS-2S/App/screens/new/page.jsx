@@ -79,7 +79,6 @@ export default function New({ navigation }) {
           values.dataNasc = formataData(values.dataNasc);
           handleCadastro(values)
             .then(() => navigation.navigate('endereco'));
-          console.log(values);
         }}
         validationSchema={validationSchema}
       >

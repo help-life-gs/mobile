@@ -16,7 +16,6 @@ export default function History({ navigation }) {
 
     const deleteHistorico = async (id) => {
         const token = await AsyncStorage.getItem('token');
-        console.log(id);
         const url = `https://help-life.azurewebsites.net/api/historico/${id}`;
         const response = await fetch(url, {
             headers: {

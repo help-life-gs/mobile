@@ -47,7 +47,6 @@ export default function NewEndereco({ navigation }) {
       });
 
       if (response.ok) {
-        console.log('Endereco cadastrado com sucesso!');
         navigation.navigate('login');
       } else {
         console.error('Erro ao cadastrar:', response.status);
@@ -68,7 +67,6 @@ export default function NewEndereco({ navigation }) {
       <Formik
         initialValues={{ cep: '', estado: '', cidade: '', logradouro: '', numero: '' }}
         onSubmit={(values) => {
-          console.log(values);
           handleEndereco(values);
         }}
         validationSchema={validationSchema}

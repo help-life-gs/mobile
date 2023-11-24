@@ -31,10 +31,8 @@ export default function Chat() {
     const getEmail = async () => {
         const userStr = await AsyncStorage.getItem('user');
         const userObj = JSON.parse(userStr);
-        console.log(userObj);
         setUserEmail(userObj.email);
     }
-
 
     useLayoutEffect(() => {
         setIsLoading(true);
@@ -46,7 +44,6 @@ export default function Chat() {
         );
 
         const unsubscribe = onSnapshot(q, snapshot => {
-            console.log('snapshot');
             setMessages(
                 snapshot.docs.map(doc => ({
                     _id: doc.id,
@@ -65,7 +62,6 @@ export default function Chat() {
 
     const onSend = useCallback((messages = []) => {
         setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
-        console.log(messages);
 
         const { _id, createdAt, text, user } = messages[0];
         addDoc(collection(database, 'chats'), {

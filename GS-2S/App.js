@@ -15,7 +15,6 @@ export default function App() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Acesso a localização negada!');
-        console.log(errorMsg);
         return;
       }
 
@@ -27,7 +26,7 @@ export default function App() {
         await AsyncStorage.setItem('location', stringLocation);
       }
       catch(err) {
-        console.error("Erro ao salvar localização", err);
+        Alert.alert(errorMsg);
       }
     })();
 
