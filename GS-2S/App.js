@@ -1,3 +1,12 @@
+
+
+// JULIO MACHADO FRETES - RM: 93285
+// MATHEUS GOMES MONTEMURRO - RM: 94689
+// MATHEUS SATO – RM: 93342
+// VICTOR HUGO DA SILVA - RM: 95680
+// VITORIO CHIOMENTO GRATON - RM: 95476
+
+
 import Routes from './App/routes';
 import { AuthProvider } from './App/context/AuthContext';
 import * as Location from 'expo-location';
